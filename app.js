@@ -4,15 +4,40 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('./models/User'); // Assurez-vous que le chemin est correct
+
+
 const { initDatabase } = require('./config/database');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const userRouter = require('./routes/user');
 
 var app = express();
 
 // Connexion à la base de données
 initDatabase();
+
+// Configuration de la session
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Initialisation de Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Utilisation de passport-local-mongoose pour la stratégie locale
+passport.use(new LocalStrategy(User.authenticate()));
+
+// Sérialisation et désérialisation de l'utilisateur
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,12 +49,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Utilisez les routes définies dans routes.js
+app.use('/', userRouter);
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// Gestionnaire d'erreurs 404
+app.use((req, res, next) => {
+  res.status(404).render('pages/error.twig', { message: 'Page non trouvée' });
 });
 
 // error handler
@@ -40,7 +67,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('pages/error.twig', { message: 'Une erreur s\'est produite!' });
 });
 
 module.exports = app;
