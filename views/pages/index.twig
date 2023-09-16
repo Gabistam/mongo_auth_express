@@ -1,6 +1,36 @@
-{% extends 'layout.twig' %}
+<!-- Étend le gabarit de base -->
+{% extends "layouts/base.twig" %}
 
+<!-- Définit le titre de la page -->
+{% block title %}Accueil{% endblock %}
+
+<!-- Définit le contenu principal de la page -->
 {% block body %}
-  <h1>{{title}}</h1>
-  <p>Welcome to {{title}}</p>
+
+    <!-- Conteneur principal pour le contenu -->
+    <div class="wrapper">
+
+        <!-- Affiche un message de bienvenue -->
+        <h1>
+            <!-- Vérifie si l'utilisateur est connecté -->
+            {% if user %}
+                <!-- Si l'utilisateur est connecté, affiche son nom -->
+                Bonjour {{ user.username }}! <br>
+            {% endif %}
+            
+            <!-- Message général pour tous les visiteurs -->
+            Ceci est la page d'accueil de notre application Express avec Twig.
+        
+            <br>
+        </h1>
+
+        <!-- Affiche une image si l'utilisateur est connecté -->
+        {% if user %}
+            <div class="d-flex justify-content-center">
+                <img src="/img/welcome-minion.gif" alt="Image de bienvenue avec un minion" >
+            </div>
+        {% endif %}
+
+    </div>
+   
 {% endblock %}

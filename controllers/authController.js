@@ -15,14 +15,25 @@ authController.registerPage = (req, res) => {
 
 // Gérer l'inscription
 authController.register = (req, res) => {
-    User.register(new User({ username: req.body.username }), req.body.password, (err, user) => {
+    console.log("Début de l'enregistrement");
+    User.register(new User({ 
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+     }), 
+     req.body.password, (err, user) => {
+        console.log("Tentative d'enregistrement");
         if (err) {
+            console.error("Erreur lors de l'enregistrement:", err);
             return res.render('pages/register.twig', { error: err.message });
         }
+        console.log("Utilisateur enregistré, tentative d'authentification");
         passport.authenticate('local')(req, res, () => {
-            res.redirect('/dashboard');
+            console.log("Utilisateur authentifié");
+            res.redirect('/login');
         });
     });
+
 };
 
 // Afficher la page de connexion
@@ -32,23 +43,23 @@ authController.loginPage = (req, res) => {
 
 // Gérer la connexion
 authController.login = passport.authenticate('local', {
-    successRedirect: '/dashboard',
+    successRedirect: '/profile',
     failureRedirect: '/login',
     failureFlash: true
 });
 
 // Afficher le tableau de bord
-authController.dashboard = (req, res) => {
+authController.profile = (req, res) => {
     if (!req.isAuthenticated()) {
         return res.redirect('/login');
     }
-    res.render('pages/dashboard.twig', { user: req.user });
+    res.render('pages/profile.twig', { user: req.user });
 };
 
 // Gérer la déconnexion
 authController.logout = (req, res) => {
-    req.logout();
-    res.redirect('/');
+    res.clearCookie('connect.sid'); // Supprime le cookie de session
+    res.redirect('/login');
 };
 
 // Afficher la page d'erreur

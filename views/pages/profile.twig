@@ -1,0 +1,22 @@
+{% extends 'layouts/base.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <h2>Tableau de bord</h2>
+    <p>Bienvenue, {{ user.username }}!</p>
+
+    <div class="card">
+        <div class="card-header">
+            Vos informations
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">
+                Email: {{ user.email }} <br>
+                Rôle: {{ user.role }}
+            </p>
+            <a href="/logout" class="btn btn-danger">Déconnexion</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -33,4 +33,8 @@ const UserSchema = new Schema({
 // Intégration de passport-local-mongoose
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('User', UserSchema);
+// Création du modèle User basé sur le schéma défini précédemment
+const User = mongoose.model('User', UserSchema);
+
+// Exportation du modèle User pour l'utiliser dans d'autres fichiers
+module.exports = User;

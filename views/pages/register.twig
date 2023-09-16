@@ -1,0 +1,30 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+    
+        <h1>Inscription</h1>
+
+       <form action="/register" method="post" class="container mt-5">
+
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" name="username" class="form-control" id="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" name="email" class="form-control" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe:</label>
+                <input type="password" name="password" class="form-control" id="password" required>
+            </div>
+            
+            <button type="submit" class="mt-5 current-btn">S'inscrire</button>
+        </form>
+    </div>
+{% endblock %}

@@ -12,7 +12,7 @@ const User = require('./models/User'); // Assurez-vous que le chemin est correct
 
 const { initDatabase } = require('./config/database');
 
-var indexRouter = require('./routes/index');
+// var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const userRouter = require('./routes/user');
 
@@ -49,9 +49,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
+
 // Utilisez les routes définies dans routes.js
 app.use('/', userRouter);
+app.get('/', (req, res) => {
+  res.render('pages/index', { user: req.user._id });
+});
 // app.use('/', indexRouter);
+
 // app.use('/users', usersRouter);
 
 // Gestionnaire d'erreurs 404
