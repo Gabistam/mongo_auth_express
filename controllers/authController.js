@@ -67,4 +67,23 @@ authController.errorPage = (req, res) => {
     res.render('pages/error.twig');
 };
 
+//Afficher la page de mise à jour du profil
+authController.getUpdateProfile = (req, res) => {
+    res.render('pages/updateprofile.twig');
+};
+
+// Gérer la mise à jour du profil
+authController.postUpdateProfile = (req, res) => {
+    User.findByIdAndUpdate(req.user._id, {
+        username: req.body.username,
+        email: req.body.email
+    }, (err, user) => {
+        if (err) {
+            console.error(err);
+            return res.render('pages/updateprofile.twig', { error: err.message });
+        }
+        res.redirect('/profile');
+    });
+};
+
 module.exports = authController;

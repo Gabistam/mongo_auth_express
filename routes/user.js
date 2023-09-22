@@ -15,6 +15,12 @@ router.post('/register',redirectIfLoggedIn, authController.register);
 router.get('/login',redirectIfLoggedIn, authController.loginPage);
 router.post('/login',redirectIfLoggedIn, authController.login);
 
+// Page de gestion du profil
+router.get('/updateprofile', isLoggedIn, userController.getUpdateProfile);
+router.post('/updateprofile', isLoggedIn, userController.postUpdateProfile);
+router.get('/deleteprofile', isLoggedIn, userController.getDeleteProfile);
+router.post('/deleteprofile', isLoggedIn, userController.postDeleteProfile);
+
 // Déconnexion
 router.get('/logout', authController.logout);
 
@@ -29,12 +35,6 @@ router.get('/error', authController.errorPage);
 // Route pour afficher le profil de l'utilisateur
 router.get('/profile', isLoggedIn, userController.getProfile);
 
-// Route pour mettre à jour le profil de l'utilisateur
-router.post('/profile/update', isLoggedIn, userController.updateProfile);
 
-// Route pour supprimer le compte utilisateur
-router.post('/profile/delete', isLoggedIn, userController.deleteAccount);
-
-// Exportation du routeur pour l'utiliser dans d'autres fichiers
 
 module.exports = router;

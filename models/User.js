@@ -18,7 +18,7 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: true,
-    match: [/\S+@\S+\.\S+/, 'L\'email est invalide.']
+    match: [/\S+@\S+\.\S+/, 'L\'email est invalide.'] // Regex pour valider le format de l'email
   },
   role: {
     type: String,
@@ -30,7 +30,7 @@ const UserSchema = new Schema({
   }
 });
 
-// Intégration de passport-local-mongoose
+// Intégration de passport-local-mongoose qui sert à gérer les utilisateurs
 UserSchema.plugin(passportLocalMongoose);
 
 // Création du modèle User basé sur le schéma défini précédemment

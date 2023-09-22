@@ -22,8 +22,13 @@ exports.getProfile = async (req, res) => {
     }
 };
 
+//Afficher la page de mise à jour du profil
+exports.getUpdateProfile = (req, res) => {
+    res.render('pages/updateprofile.twig');
+};
+
 // Fonction pour mettre à jour le profil de l'utilisateur
-exports.updateProfile = async (req, res) => {
+exports.postUpdateProfile = async (req, res) => {
     try {
         // Récupère le nom d'utilisateur et l'e-mail du corps de la requête
         const { username, email } = req.body;
@@ -40,8 +45,13 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
+//Afficher la page de suppression du profil
+exports.getDeleteProfile = (req, res) => {
+    res.render('pages/deleteprofile.twig');
+};
+
 // Fonction pour supprimer le compte utilisateur
-exports.deleteAccount = async (req, res) => {
+exports.postDeleteProfile = async (req, res) => {
     try {
         // Supprime l'utilisateur en fonction de l'ID stocké dans le token
         await User.findByIdAndDelete(req.user._id);

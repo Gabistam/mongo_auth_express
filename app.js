@@ -12,9 +12,9 @@ const User = require('./models/User'); // Assurez-vous que le chemin est correct
 
 const { initDatabase } = require('./config/database');
 
-// var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Importation des routes
 const userRouter = require('./routes/user');
+const TaskRoutes = require('./routes/task');
 
 var app = express();
 
@@ -28,15 +28,15 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Initialisation de Passport
-app.use(passport.initialize());
-app.use(passport.session());
+// Initialisation de Passport qui va gérer l'authentification
+app.use(passport.initialize());// Sert à initialiser Passport
+app.use(passport.session());//Sert à utiliser les sessions avec Passport
 
 // Utilisation de passport-local-mongoose pour la stratégie locale
 passport.use(new LocalStrategy(User.authenticate()));
 
-// Sérialisation et désérialisation de l'utilisateur
-passport.serializeUser(User.serializeUser());
+// Sérialisation et désérialisation de l'utilisateur qui veut dire que Passport va lire les informations de session et les encoder/décoder
+passport.serializeUser(User.serializeUser());//
 passport.deserializeUser(User.deserializeUser());
 
 // view engine setup
@@ -54,15 +54,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
-// Utilisez les routes définies dans routes.js
+// Routes spécifiques
+app.use('/', TaskRoutes);
 app.use('/', userRouter);
+
+// Routes générales
 app.get('/', (req, res) => {
   res.render('pages/index', { user: req.user._id });
 });
-// app.use('/', indexRouter);
-
-// app.use('/users', usersRouter);
 
 // Gestionnaire d'erreurs 404
 app.use((req, res, next) => {
