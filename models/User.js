@@ -27,7 +27,7 @@ const UserSchema = new Schema({
       message: 'Le rôle est invalide.'
     },
     default: 'user'
-  }
+  } 
 });
 
 // Intégration de passport-local-mongoose
