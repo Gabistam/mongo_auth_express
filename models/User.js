@@ -26,7 +26,7 @@ const UserSchema = new Schema({
       values: ['user', 'admin'],
       message: 'Le rôle est invalide.'
     },
-    default: 'user'
+    default: 'user' 
   }
 });
 
