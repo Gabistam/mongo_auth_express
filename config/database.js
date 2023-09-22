@@ -36,7 +36,7 @@ const disconnectFromDatabase = async () => {
  * Cette fonction établit simplement la connexion.
  */
 const initDatabase = async () => {
-    await connectToDatabase();
+    await connectToDatabase();  
 };
 
 // Exportation des fonctions pour utilisation ailleurs dans l'application
