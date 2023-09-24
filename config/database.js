@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const MONGODB_URI=`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net/${process.env.DB_DATABASE}?retryWrites=true&w=majority`;
+
 
 
 /**
  * Fonction pour établir la connexion à la base de données.
  */
-const connectToDatabase = async () => {
+const bizareDB = async () => {
     try {
-        await mongoose.connect(MONGODB_URI, {
+        await mongoose.connect(`mongodb+srv://usernode:Odvjbk1ZeWdJSL8m@cluster1.xw7jt7q.mongodb.net/test_mongo?retryWrites=true&w=majority`, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
@@ -18,4 +18,4 @@ const connectToDatabase = async () => {
     }
 };
 
-module.exports = { connectToDatabase };
+module.exports = { bizareDB };
