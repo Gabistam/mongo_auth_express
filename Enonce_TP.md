@@ -27,7 +27,7 @@ Créez un fichier `.env` et ajoutez-y les variables d'environnement nécessaires
 ### Étape 3: Modification de `app.js` 📝
 
 1. Importez et configurez une dépendance pour gérer les variables d'environnement.
-2. Utilisez la variable `PORT` depuis `.env`.
+2. Utilisez la variable `PORT` depuis `.env`. Vous devrez utiliser le port `3333` mais il ne doit pas apparaître dans ce fichier sinon le `3030`.
 
 ### Étape 4: Modification de `database.js` 🛠️
 
