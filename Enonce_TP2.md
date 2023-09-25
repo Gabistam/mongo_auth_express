@@ -1,88 +1,100 @@
-# TP : Intégration de Twig et Mise en Place d'un Routeur 🛠️
+# TP : Destructuration d'une Page HTML avec les Partials Twig et Bootstrap 🛠️
 
 ## Objectif du TP 🎯
 
-Après avoir mis en place un serveur minimaliste avec une connexion à MongoDB Atlas, nous allons maintenant ajouter une couche de présentation en utilisant Twig. Vous allez apprendre à intégrer Twig dans votre projet Node.js et à utiliser son système de routage pour afficher une page `home.twig`.
+L'objectif de ce TP est de vous apprendre à décomposer une page HTML en utilisant les partials de Twig. Vous allez créer une page modèle avec Bootstrap, puis la découper en différentes parties (partials) pour faciliter la réutilisation des éléments.
 
 ## Prérequis 📚
 
-- Avoir suivi le TP précédent sur la mise en place d'un serveur et la connexion à MongoDB Atlas.
-- Avoir une connaissance de base de HTML.
+- Avoir une connaissance de base de HTML, CSS, et Bootstrap.
+- Avoir suivi les TP précédents sur la mise en place d'un serveur et l'intégration de Twig.
 
 ## Étapes du TP 📝
 
-### Étape 1: Installation de Twig.js 📦
+### Étape 1: Création du Dossier `public` et Configuration dans `app.js` 📂
 
-1. Installez la dépendance Twig.js en utilisant npm :
-
-    ```bash
-    npm install twig
-    ```
-
-### Étape 2: Configuration de Twig dans `app.js` 🛠️
-
-1. Importez Twig dans votre fichier `app.js` :
+1. Créez un dossier `public` à la racine de votre projet.
+2. Configurez le middleware static d'Express dans `app.js` :
 
     ```javascript
-    const twig = require('twig');
+    app.use(express.static('public'));
     ```
 
-2. Configurez Express pour utiliser Twig comme moteur de template :
+### Étape 2: Organisation des Dossiers pour les Vues 🗂️
 
-    ```javascript
-    app.set('view engine', 'twig');
-    ```
+1. Dans le dossier `views`, créez trois sous-dossiers :
+    - `layout`
+    - `pages`
+    - `partials`
 
-3. Définissez le dossier où seront stockés vos fichiers Twig :
+### Étape 3: Création de la Page Modèle avec Bootstrap 🎨
 
-    ```javascript
-    app.set('views', './views');
-    ```
-
-### Étape 3: Création du Dossier et du Fichier `home.twig` 📂
-
-1. Créez un dossier nommé `views` à la racine de votre projet.
-2. Dans ce dossier, créez un fichier `home.twig`.
-3. Ajoutez un peu de HTML pour tester :
+1. Dans le dossier `layout`, créez un fichier `base.twig`.
+2. Ajoutez le code HTML de base et intégrez le CDN de Bootstrap.
 
     ```twig
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Accueil</title>
+        <title>{% block title %}Mon site{% endblock %}</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <h1>Bienvenue sur la page d'accueil !</h1>
+        {% block content %}{% endblock %}
     </body>
     </html>
     ```
 
-### Étape 4: Configuration du Routeur 🚀
+### Étape 4: Création des Partials pour la Navbar et le Footer 🌐
 
-1. Dans votre fichier `app.js`, ajoutez une route pour la page d'accueil :
+1. Dans le dossier `partials`, créez deux fichiers : `navbar.twig` et `footer.twig`.
+2. Dans `navbar.twig`, ajoutez le code HTML pour une navbar Bootstrap.
+3. Dans `footer.twig`, ajoutez le code HTML pour un footer.
+
+### Étape 5: Intégration des Partials dans `base.twig` 🧩
+
+1. Ouvrez `base.twig` et intégrez les partials de la navbar et du footer en utilisant la syntaxe `include` de Twig.
+
+    ```twig
+    {% include 'partials/navbar.twig' %}
+    {% block content %}{% endblock %}
+    {% include 'partials/footer.twig' %}
+    ```
+
+### Étape 6: Création de la Page `home.twig` 🏠
+
+1. Dans le dossier `pages`, créez un fichier `home.twig`.
+2. Étendez `base.twig` et ajoutez du contenu spécifique à la page d'accueil.
+
+    ```twig
+    {% extends 'layout/base.twig' %}
+
+    {% block title %}Accueil{% endblock %}
+
+    {% block content %}
+        <h1>Bienvenue sur la page d'accueil ! 🏠</h1>
+    {% endblock %}
+    ```
+
+### Étape 7: Configuration du Routeur pour Afficher `home.twig` 🚀
+
+1. Dans `app.js`, ajoutez une route pour la page d'accueil qui rend `home.twig`.
 
     ```javascript
     app.get('/', (req, res) => {
-        res.render('home');
+        res.render('pages/home');
     });
     ```
 
-2. Redémarrez votre serveur et accédez à `http://localhost:3333/` (ou le port que vous avez défini) pour voir si la page `home.twig` s'affiche correctement.
-
-### Étape 5: Testez Votre Application 🧪
-
-1. Assurez-vous que votre serveur est en cours d'exécution.
-2. Ouvrez un navigateur et accédez à `http://localhost:3333/`.
-3. Vous devriez voir le message "Bienvenue sur la page d'accueil !" s'afficher.
-
 ## Conseil de notre Développeur Senior 👨‍💻
 
-Lorsque vous travaillez avec des moteurs de templates comme Twig, assurez-vous de bien organiser vos fichiers de vues pour faciliter la maintenance et la collaboration.
+L'utilisation de partials et de layouts est une excellente manière de réduire la duplication de code dans vos vues. Cela rend également la maintenance beaucoup plus facile. 🛠️
 
 ## Points à Vérifier ✅
 
-- [ ] Twig est-il correctement installé et configuré ?
-- [ ] Le dossier `views` et le fichier `home.twig` sont-ils en place ?
-- [ ] Le routeur est-il correctement configuré pour afficher `home.twig` ?
+- [ ] Le dossier `public` est-il bien configuré ?
+- [ ] Les dossiers pour les vues sont-ils bien organisés ?
+- [ ] Les partials sont-ils correctement intégrés dans `base.twig` ?
+- [ ] La page `home.twig` s'affiche-t-elle correctement ?
 
-Si vous pouvez cocher toutes ces cases, félicitations ! Vous avez réussi à intégrer Twig dans votre projet Node.js ! 🎉🚀 Vous êtes maintenant prêts à créer des applications web plus complexes avec des vues dynamiques. Bravo ! 👏
+Si vous pouvez cocher toutes ces cases, félicitations ! Vous avez réussi à décomposer une page HTML en utilisant les partials de Twig et à intégrer Bootstrap ! 🎉🚀
