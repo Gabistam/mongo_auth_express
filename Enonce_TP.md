@@ -1,58 +1,88 @@
-# TP : Mise en Place d'un Serveur Minimaliste avec Connexion à MongoDB Atlas 🛠️
+# TP : Intégration de Twig et Mise en Place d'un Routeur 🛠️
 
 ## Objectif du TP 🎯
 
-Votre mission, si vous l'acceptez, est de corriger et d'optimiser un projet de serveur Node.js existant. Ce serveur doit se connecter à une base de données MongoDB Atlas. Le code de départ présente plusieurs inconvénients :
+Après avoir mis en place un serveur minimaliste avec une connexion à MongoDB Atlas, nous allons maintenant ajouter une couche de présentation en utilisant Twig. Vous allez apprendre à intégrer Twig dans votre projet Node.js et à utiliser son système de routage pour afficher une page `home.twig`.
 
-- Manque de dépendances
-- Absence de définition de la variable `PORT`
-- Sécurisation insuffisante de l'URI de la base de données
-- Absence du fichier `.env` pour la gestion des variables d'environnement
-- Nom de la fonction de connexion à la base de données peu clair
+## Prérequis 📚
+
+- Avoir suivi le TP précédent sur la mise en place d'un serveur et la connexion à MongoDB Atlas.
+- Avoir une connaissance de base de HTML.
 
 ## Étapes du TP 📝
 
-### Étape 1: Installation des Dépendances Manquantes 📦
+### Étape 1: Installation de Twig.js 📦
 
-Votre premier défi est de trouver les dépendances manquantes. Voici quelques indices :
+1. Installez la dépendance Twig.js en utilisant npm :
 
-- Une dépendance pour créer un serveur web
-- Une dépendance pour interagir avec MongoDB
-- Une dépendance pour gérer les variables d'environnement
+    ```bash
+    npm install twig
+    ```
 
-### Étape 2: Configuration du Fichier `.env` 🗝️
+### Étape 2: Configuration de Twig dans `app.js` 🛠️
 
-Créez un fichier `.env` et ajoutez-y les variables d'environnement nécessaires. Pensez notamment au port et à l'URI de la base de données.
+1. Importez Twig dans votre fichier `app.js` :
 
-### Étape 3: Modification de `app.js` 📝
+    ```javascript
+    const twig = require('twig');
+    ```
 
-1. Importez et configurez une dépendance pour gérer les variables d'environnement.
-2. Utilisez la variable `PORT` depuis `.env`. Vous devrez utiliser le port `3333` mais il ne doit pas apparaître dans ce fichier sinon le `3030`.
+2. Configurez Express pour utiliser Twig comme moteur de template :
 
-### Étape 4: Modification de `database.js` 🛠️
+    ```javascript
+    app.set('view engine', 'twig');
+    ```
 
-1. Changez le nom de la fonction `bizareDB` pour quelque chose de plus explicite.
-2. Utilisez l'URI de MongoDB depuis `.env`.
-3. Réfléchissez à comment vous pouvez sécuriser cette URI.
+3. Définissez le dossier où seront stockés vos fichiers Twig :
 
-### Étape 5: Structure du Projet 📂
+    ```javascript
+    app.set('views', './views');
+    ```
 
-Vous êtes habitués à utiliser `npx express-generator` pour générer la structure de votre projet. Pour cet exercice, nous allons faire simple. Voici les fichiers que vous devez avoir en dehors des fichiers d'initialisation et d'installation (package.json, node-modules, package-lock.json):
+### Étape 3: Création du Dossier et du Fichier `home.twig` 📂
 
-- `app.js`
-- `database.js` (dans un dossier `config`)
-- `.env`
+1. Créez un dossier nommé `views` à la racine de votre projet.
+2. Dans ce dossier, créez un fichier `home.twig`.
+3. Ajoutez un peu de HTML pour tester :
+
+    ```twig
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Accueil</title>
+    </head>
+    <body>
+        <h1>Bienvenue sur la page d'accueil !</h1>
+    </body>
+    </html>
+    ```
+
+### Étape 4: Configuration du Routeur 🚀
+
+1. Dans votre fichier `app.js`, ajoutez une route pour la page d'accueil :
+
+    ```javascript
+    app.get('/', (req, res) => {
+        res.render('home');
+    });
+    ```
+
+2. Redémarrez votre serveur et accédez à `http://localhost:3333/` (ou le port que vous avez défini) pour voir si la page `home.twig` s'affiche correctement.
+
+### Étape 5: Testez Votre Application 🧪
+
+1. Assurez-vous que votre serveur est en cours d'exécution.
+2. Ouvrez un navigateur et accédez à `http://localhost:3333/`.
+3. Vous devriez voir le message "Bienvenue sur la page d'accueil !" s'afficher.
 
 ## Conseil de notre Développeur Senior 👨‍💻
 
-Lorsque vous travaillez avec des variables d'environnement, assurez-vous de ne jamais les pousser dans votre dépôt Git. Utilisez un fichier `.gitignore` pour exclure le fichier `.env`.
+Lorsque vous travaillez avec des moteurs de templates comme Twig, assurez-vous de bien organiser vos fichiers de vues pour faciliter la maintenance et la collaboration.
 
 ## Points à Vérifier ✅
 
-- Avez-vous trouvé toutes les dépendances manquantes ?
-- Le fichier `.env` est-il bien configuré ?
-- Avez-vous sécurisé l'URI de MongoDB ?
-- La variable `PORT` est-elle bien définie ?
-- Le nom de la fonction de connexion à la base de données est-il clair et explicite ?
+- [ ] Twig est-il correctement installé et configuré ?
+- [ ] Le dossier `views` et le fichier `home.twig` sont-ils en place ?
+- [ ] Le routeur est-il correctement configuré pour afficher `home.twig` ?
 
-Si vous pouvez cocher toutes ces cases, félicitations ! Vous êtes sur la bonne voie pour devenir de véritables experts en Node.js ! 🎉🚀
+Si vous pouvez cocher toutes ces cases, félicitations ! Vous avez réussi à intégrer Twig dans votre projet Node.js ! 🎉🚀 Vous êtes maintenant prêts à créer des applications web plus complexes avec des vues dynamiques. Bravo ! 👏
