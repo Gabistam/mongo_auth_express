@@ -1,4 +1,4 @@
-# TP : Destructuration d'une Page HTML avec les Partials Twig et Bootstrap 🛠️
+# TP : Destructuration d'une Page HTML avec les Partials Twig 🛠️
 
 ## Objectif du TP 🎯
 
@@ -23,13 +23,13 @@ L'objectif de ce TP est de vous apprendre à décomposer une page HTML en utilis
 ### Étape 2: Organisation des Dossiers pour les Vues 🗂️
 
 1. Dans le dossier `views`, créez trois sous-dossiers :
-    - `layout`
+    - `layouts`
     - `pages`
     - `partials`
 
 ### Étape 3: Création de la Page Modèle avec Bootstrap 🎨
 
-1. Dans le dossier `layout`, créez un fichier `base.twig`.
+1. Dans le dossier `layouts`, créez un fichier `base.twig`.
 2. Ajoutez le code HTML de base et intégrez le CDN de Bootstrap.
 
     ```twig
@@ -67,7 +67,7 @@ L'objectif de ce TP est de vous apprendre à décomposer une page HTML en utilis
 2. Étendez `base.twig` et ajoutez du contenu spécifique à la page d'accueil.
 
     ```twig
-    {% extends 'layout/base.twig' %}
+    {% extends 'layouts/base.twig' %}
 
     {% block title %}Accueil{% endblock %}
 
