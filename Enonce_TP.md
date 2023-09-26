@@ -2,7 +2,7 @@
 
 ## Objectif du TP 🎯
 
-Votre mission, si vous l'acceptez, est de corriger et d'optimiser un projet de serveur Node.js existant. Ce serveur doit se connecter à une base de données MongoDB Atlas. Le code de départ présente plusieurs inconvénients :
+Votre mission, si vous l'acceptez, est de corriger et d'optimiser un projet de serveur Node.js existant. Ce serveur doit se connecter à une base de données MongoDB Atlas. Le code de départ présente plusieurs inconvénients :  
 
 - Manque de dépendances
 - Absence de définition de la variable `PORT`
