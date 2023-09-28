@@ -1,5 +1,17 @@
+//////////////////IMPORTS///////////////////////
+
 // Importation du modèle User
 const User = require('../models/User');
+
+// Importation du module multer
+const multer = require('multer');
+
+// Configuration de multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
+//////////////////CONTROLLERS///////////////////////
 
 // Affichage de la page d'inscription
 exports.showRegisterPage = (req, res) => {
@@ -8,11 +20,25 @@ exports.showRegisterPage = (req, res) => {
 
 // Enregistrement d'un nouvel utilisateur
 exports.registerUser = async (req, res) => {
-    const { username, email, password } = req.body;
-    const newUser = new User({ username, email, password });
-    await newUser.save();
-    res.redirect('/users');
+    try {
+        const { username, email, password } = req.body;
+        const newUser = new User({
+            username,
+            email,
+            password,
+            avatar: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            }
+        });
+        await newUser.save();
+        res.redirect('/users');
+    } catch (error) {
+        console.error("Erreur lors de l'enregistrement de l'utilisateur :", error);
+        res.status(500).send("Erreur lors de l'enregistrement de l'utilisateur.");
+    }
 };
+
 
 // Liste des utilisateurs
 exports.listUsers = async (req, res) => {
@@ -27,11 +53,40 @@ exports.showEditPage = async (req, res) => {
 };
 
 // Modification d'un utilisateur
+// Modification d'un utilisateur
 exports.editUser = async (req, res) => {
-    const { username, email, password } = req.body;
-    await User.findByIdAndUpdate(req.params.id, { username, email, password });
-    res.redirect('/users');
+    try {
+        // Log pour vérifier les données reçues
+        console.log("Données du formulaire reçues:", req.body);
+        console.log("Fichier reçu:", req.file);
+
+        const { username, email, password } = req.body;
+        const updateData = { username, email, password };
+
+        // Vérifie si un fichier a été envoyé
+        if (req.file) {
+            updateData.avatar = {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            };
+        } else {
+            console.log("Aucun fichier envoyé");
+        }
+
+        // Met à jour l'utilisateur
+        await User.findByIdAndUpdate(req.params.id, updateData);
+
+        // Redirige vers la liste des utilisateurs
+        res.redirect('/users');
+    } catch (error) {
+        // Log d'erreur
+        console.error("Erreur lors de la modification de l'utilisateur :", error);
+
+        // Envoie une réponse d'erreur
+        res.status(500).send("Erreur lors de la modification de l'utilisateur.");
+    }
 };
+
 
 // Suppression d'un utilisateur
 exports.deleteUser = async (req, res) => {
