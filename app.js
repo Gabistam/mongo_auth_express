@@ -32,7 +32,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Utilisation de passport-local-mongoose pour la stratégie locale
+// Utilisation de passport-local-mongoose pour la stratégie locale servant à l'authentification 
 passport.use(new LocalStrategy(User.authenticate()));
 
 // Sérialisation et désérialisation de l'utilisateur
