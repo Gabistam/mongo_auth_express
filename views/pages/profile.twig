@@ -5,6 +5,16 @@
 {% block content %}
     <div class="container mt-5">
         <h1>Votre Profil 🤵</h1>
+
+        {# Affichage des messages flash #}
+        {% if flashMessages %}
+            {% for flashMessage in flashMessages %}
+                <div class="alert alert-{{ flashMessage.type }}">
+                    {{ flashMessage.message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <p>Nom d'utilisateur: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
     </div>

@@ -4,6 +4,7 @@ const { connectDB } = require('./config/database');
 const twig = require('twig');
 const session = require('express-session');
 const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
 
 // Configuration du port
 const PORT = process.env.PORT || 3000;
@@ -43,9 +44,19 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// Middleware pour les messages flash
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.session.flash || [];
+  req.session.flash = [];
+  next();
+});
+
 // Initialisation de Passport pour l'authentification
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Configuration de Passport pour utiliser une stratégie locale
+passport.use(new localStrategy(User.authenticate()));
 
 ///////// Routes /////////////
 
