@@ -53,7 +53,6 @@ exports.showEditPage = async (req, res) => {
 };
 
 // Modification d'un utilisateur
-// Modification d'un utilisateur
 exports.editUser = async (req, res) => {
     try {
         // Log pour vérifier les données reçues
