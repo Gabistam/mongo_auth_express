@@ -4,12 +4,13 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models/User'); // Assurez-vous que le chemin est correct
+require('dotenv').config();
+const logger = require('morgan');
 
 
 const { initDatabase } = require('./config/database');
 
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 const userRouter = require('./routes/user');
 
 var app = express();
