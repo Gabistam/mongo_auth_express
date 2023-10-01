@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function AddTask() {
+function AddTask({ onTaskAdded }) {
     const [title, setTitle] = useState('');
 
     const handleSubmit = async (e) => {
@@ -19,8 +19,10 @@ function AddTask() {
                 throw new Error('Erreur lors de l\'ajout de la tâche');
             }
 
+            const newTask = await response.json();
+            onTaskAdded(newTask);  // Appeler la fonction de rappel
+
             setTitle('');
-            // Vous pouvez ajouter une logique pour rafraîchir la liste des tâches ici
         } catch (error) {
             console.error("Erreur lors de l'ajout de la tâche:", error);
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TaskItem from './TaskItem';
 import ShowTask from './ShowTask';
+import AddTask from './AddTask';
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
@@ -24,6 +25,10 @@ function TaskList() {
 
         fetchTasks();
     }, []);
+
+    const handleNewTask = (newTask) => {
+        setTasks((prevTasks) => [...prevTasks, newTask]);
+    };
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -60,6 +65,7 @@ function TaskList() {
     return (
         <div className="task-list">
             <h1>Ma liste de tâches</h1>
+            <AddTask onTaskAdded={handleNewTask} />
             {selectedTask ? (
                 <ShowTask task={selectedTask} />
             ) : (

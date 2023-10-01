@@ -11,23 +11,32 @@ router.get('/tasks', (req, res) => {
 // Route pour récupérer toutes les tâches
 router.get('/api/tasks', isLoggedIn, async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find({ userId: req.user._id });  // Filtrer les tâches par userId
         res.json(tasks);
     } catch (err) {
+        console.error("Erreur lors de la récupération des tâches:", err);
         res.status(500).send('Erreur lors de la récupération des tâches.');
     }
 });
 
+
 // Route pour créer une nouvelle tâche
 router.post('/api/tasks', isLoggedIn, async (req, res) => {
     try {
-        const task = new Task(req.body);
+        const taskData = {
+            ...req.body,
+            userId: req.user._id  // Utilisez l'ID de l'utilisateur connecté
+        };
+        const task = new Task(taskData);
         await task.save();
         res.json(task);
     } catch (err) {
+        console.error("Corps de la requête:", req.body);
+        console.error("Erreur détaillée:", err);
         res.status(500).send('Erreur lors de la création d\'une nouvelle tâche.');
     }
 });
+
 
 // Route pour mettre à jour une tâche
 router.put('/api/tasks/:id', isLoggedIn, async (req, res) => {
