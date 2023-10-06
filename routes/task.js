@@ -41,7 +41,12 @@ router.post('/api/tasks', isLoggedIn, async (req, res) => {
 // Route pour mettre à jour une tâche
 router.put('/api/tasks/:id', isLoggedIn, async (req, res) => {
     try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
+        if (!task) {
+            return res.status(403).send('Vous n\'êtes pas autorisé à modifier cette tâche.');
+        }
+        Object.assign(task, req.body);
+        await task.save();
         res.json(task);
     } catch (err) {
         res.status(500).send('Erreur lors de la mise à jour de la tâche.');
@@ -51,7 +56,11 @@ router.put('/api/tasks/:id', isLoggedIn, async (req, res) => {
 // Route pour supprimer une tâche
 router.delete('/api/tasks/:id', isLoggedIn, async (req, res) => {
     try {
-        await Task.findByIdAndDelete(req.params.id);
+        const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
+        if (!task) {
+            return res.status(403).send('Vous n\'êtes pas autorisé à supprimer cette tâche.');
+        }
+        await task.remove();
         res.json({ message: 'Tâche supprimée avec succès.' });
     } catch (err) {
         res.status(500).send('Erreur lors de la suppression de la tâche.');

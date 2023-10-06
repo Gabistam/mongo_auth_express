@@ -34,7 +34,7 @@ function AddTask({ onTaskAdded }) {
                 <label htmlFor="taskTitle" className="form-label">Titre de la tâche</label>
                 <input type="text" className="form-control" id="taskTitle" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
-            <button type="submit" className="btn btn-primary">Ajouter</button>
+            <button type="submit" className="btn btn-primary mb-5">Ajouter</button>
         </form>
     );
 }
