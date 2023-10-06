@@ -43,7 +43,7 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
 1. Installez le package `multer` pour gérer le téléchargement de fichiers.
 
     ```bash
-    npm install multer
+    npm i multer
     ```
 
 2. Configurez Multer dans `userController.js` et `routes/user.js`.
@@ -162,6 +162,7 @@ Mettez à jour `routes/user.js` pour inclure le middleware Multer.
 
 2. Dans `reister.twig`, ajoutez un champ pour le téléchargement de l'avatar.
         
+    ```html    
     <!-- Ajout de l'attribut enctype pour le téléchargement de fichiers -->
     <form action="/register" method="POST" enctype="multipart/form-data">
         <!-- ... -->
