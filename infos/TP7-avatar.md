@@ -16,11 +16,26 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
 1. Mettez à jour votre modèle `User` pour inclure un champ `avatar` qui contiendra les données de l'image et son type.
 
     ```javascript
-    // Ajoutez ces lignes dans votre modèle User
-    avatar: {
-        data: Buffer,
-        contentType: String
-    }
+        const UserSchema = new mongoose.Schema({
+            username: { 
+                type: String, 
+                required: true 
+            },
+            email: { 
+                type: String, 
+                required: true, 
+                unique: true 
+            },
+            password: { 
+                type: String, 
+                required: true 
+            },
+            avatar: {
+                data: Buffer,
+                contentType: String
+            }
+        });
+
     ```
 
 ### Étape 2: Installation et Configuration de Multer 📦
@@ -68,6 +83,7 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
         }
     };
 
+
     ```
 
 2. Mettez à jour la méthode `editUser` pour permettre la modification de l'avatar.
@@ -76,33 +92,20 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
     // Modification d'un utilisateur
     exports.editUser = async (req, res) => {
         try {
-            // Log pour vérifier les données reçues
-            console.log("Données du formulaire reçues:", req.body);
-            console.log("Fichier reçu:", req.file);
-
             const { username, email, password } = req.body;
             const updateData = { username, email, password };
 
-            // Vérifie si un fichier a été envoyé
             if (req.file) {
                 updateData.avatar = {
                     data: req.file.buffer,
                     contentType: req.file.mimetype
                 };
-            } else {
-                console.log("Aucun fichier envoyé");
             }
 
-            // Met à jour l'utilisateur
             await User.findByIdAndUpdate(req.params.id, updateData);
-
-            // Redirige vers la liste des utilisateurs
             res.redirect('/users');
         } catch (error) {
-            // Log d'erreur
             console.error("Erreur lors de la modification de l'utilisateur :", error);
-
-            // Envoie une réponse d'erreur
             res.status(500).send("Erreur lors de la modification de l'utilisateur.");
         }
     };
@@ -111,31 +114,26 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
 
 ### Étape 4: Mise à Jour des Routes 🛣️
 
-1. Mettez à jour `routes/user.js` pour inclure le middleware Multer.
+Mettez à jour `routes/user.js` pour inclure le middleware Multer.
 
     ```javascript
     //// Ajoutez ces lignes pour gérer l'avatar///
+ 
+    1. Mettez à jour la route pour enregistrer un nouveau user
 
     // Route pour enregistrer un nouvel utilisateur
     router.post('/register', upload.single('avatar'), userController.registerUser);
 
-    // Route pour modifier un utilisateur
-    router.post('/edit/:id', upload.single('avatar'), userController.editUser);
-
-    ```
 
     2. Mettez à jour la route pour modifier le user
 
-    ```javascript
     // Route pour modifier un utilisateur
     router.post('/edit/:id', upload.single('avatar'), userController.editUser);
 
-    ```
+
+    3. Ajoutez une nouvelle route pour servir les images d'avatar.
 
 
-3. Ajoutez une nouvelle route pour servir les images d'avatar.
-
-    ```javascript
     // Route pour servir les images (avatar)
     router.get('/avatar/:id', async (req, res) => {
         try {
@@ -164,24 +162,35 @@ Dans ce TP, nous allons ajouter une fonctionnalité pour permettre aux utilisate
 
 2. Dans `reister.twig`, ajoutez un champ pour le téléchargement de l'avatar.
         
-        ```html
-    <div class="mb-3">
-        <label for="avatar" class="form-label">Avatar</label>
-        <input type="file" class="form-control" id="avatar" name="avatar">
-    </div>
-    ```
+    <!-- Ajout de l'attribut enctype pour le téléchargement de fichiers -->
+    <form action="/register" method="POST" enctype="multipart/form-data">
+        <!-- ... -->
+        <div class="form-group">
+            <label for="avatar">Avatar</label>
+            <input type="file" class="form-control" id="avatar" name="avatar">
+        </div>
+        <!-- ... -->
+    </form>
+
 
 3. Dans `edit.twig`, modifier les attributs de <form> et ajoutez un champ pour le téléchargement de l'avatar.
 
     ```html
-    <form action="/edit/{{ user._id }}" method="post" enctype="multipart/form-data">
-
-        ......
-
-    <div class="mb-3">
-        <label for="avatar" class="form-label">Avatar</label>
-        <input type="file" class="form-control" id="avatar" name="avatar">
+    <!-- Avatar centré -->
+    <div class="text-center mb-5">
+        <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="200" style="border-radius: 40%;">
     </div>
+
+    <!-- Ajout de l'attribut enctype pour le téléchargement de fichiers -->
+    <form action="/edit/{{ user._id }}" method="post" enctype="multipart/form-data">
+        <!-- ... -->
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Avatar</label>
+            <input type="file" class="form-control" id="avatar" name="avatar">
+        </div>
+        <!-- ... -->
+    </form>
+
     ```
 
 ## Conseil de notre Développeur Senior 👨‍💻
