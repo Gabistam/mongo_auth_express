@@ -51,7 +51,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     */
     function redirectIfLoggedIn(req, res, next) {
         if (req.isAuthenticated()) return res.redirect('/profile');
-        next();
+        next(); 
     }
 
     module.exports = {
