@@ -60,6 +60,8 @@ app.get('/', (req, res) => {
   res.render('pages/index', { user: req.user._id });
 });
 
+
+
 // Gestionnaire d'erreurs 404
 app.use((req, res, next) => {
   res.status(404).render('pages/error.twig', { message: 'Page non trouvée' });
