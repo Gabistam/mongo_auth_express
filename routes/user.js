@@ -17,17 +17,13 @@ const upload = multer({ storage: storage });
 
 // Route pour afficher la page de connexion
 // Le middleware `auth.redirectIfLoggedIn` redirige vers une autre page si l'utilisateur est déjà connecté
-router.get('/login', auth.redirectIfLoggedIn, authController.showLoginPage);
+router.get('/login', auth.redirectIfLoggedIn, authController.loginPage);
 
 // Route pour gérer le processus de connexion
 router.post('/login', authController.login);
 
 // Route pour déconnecter l'utilisateur
 router.get('/logout', authController.logout);
-
-// Route pour afficher le profil de l'utilisateur
-// Le middleware `auth.isAuthenticated` vérifie si l'utilisateur est authentifié
-router.get('/profile', auth.isAuthenticated, userController.showProfile);
 
 ////////// Définition des routes liées aux utilisateurs ///////////
 

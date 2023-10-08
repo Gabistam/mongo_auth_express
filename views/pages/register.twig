@@ -5,6 +5,16 @@
 {% block content %}
     <div class="container">
         <h1>Inscription 📝</h1>
+        
+            {# Affichage des messages flash #}
+        {% if flashMessages %}
+            {% for flashMessage in flashMessages %}
+                <div class="alert alert-{{ flashMessage.type }}">
+                    {{ flashMessage.message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
         <form action="/register" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="username">Nom d'utilisateur</label>

@@ -86,11 +86,6 @@ exports.editUser = async (req, res) => {
     }
 };
 
-// Affichage du profil de l'utilisateur
-exports.showProfile = async (req, res) => {
-    res.render('pages/profile', { user: req.user });
-};
-
 // Suppression d'un utilisateur
 exports.deleteUser = async (req, res) => {
     await User.findByIdAndDelete(req.params.id);

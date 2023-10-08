@@ -1,4 +1,3 @@
-   // middleware/auth.js
     /**
     * Middleware pour vérifier si l'utilisateur est connecté.
     * Si l'utilisateur est connecté, il continue vers la prochaine route/middleware.
@@ -15,7 +14,7 @@
   * Sinon, il continue vers la prochaine route/middleware.
   */
   function redirectIfLoggedIn(req, res, next) {
-      if (req.isAuthenticated()) return res.redirect('/profile');
+      if (req.isAuthenticated()) return res.redirect('/users');
       next(); 
   }
 

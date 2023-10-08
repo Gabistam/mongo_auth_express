@@ -5,7 +5,7 @@ const twig = require('twig');
 const session = require('express-session');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
-
+const flash = require('connect-flash');
 // Configuration du port
 const PORT = process.env.PORT || 3000;
 
@@ -44,10 +44,12 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// Utilisation de connect-flash
+app.use(flash());
+
 // Middleware pour les messages flash
 app.use((req, res, next) => {
-  res.locals.flashMessages = req.session.flash || [];
-  req.session.flash = [];
+  res.locals.flashMessages = req.flash();
   next();
 });
 
@@ -58,6 +60,16 @@ app.use(passport.session());
 // Configuration de Passport pour utiliser une stratégie locale
 passport.use(new localStrategy(User.authenticate()));
 
+// Sérialisation et désérialisation
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Middleware pour rendre l'utilisateur disponible dans toutes les vues
+app.use((req, res, next) => {
+res.locals.user = req.user;
+next();
+});
+
 ///////// Routes /////////////
 
 // Route pour la page d'accueil
@@ -67,6 +79,11 @@ app.get('/', (req, res) => {
 
 // Utilisation des routes utilisateur définies dans le fichier user.js
 app.use('/', userRoutes);
+
+// Gestion des erreurs
+app.use((req, res, next) => {
+  res.status(404).render('pages/error.twig', { message: 'Page non trouvée' });
+  });
 
 // Démarrage du serveur
 app.listen(PORT, () => {

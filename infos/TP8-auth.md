@@ -50,7 +50,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     * Sinon, il continue vers la prochaine route/middleware.
     */
     function redirectIfLoggedIn(req, res, next) {
-        if (req.isAuthenticated()) return res.redirect('/profile');
+        if (req.isAuthenticated()) return res.redirect('/users');
         next(); 
     }
 
@@ -85,7 +85,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 
     module.exports = router;
     ```
-2. Ajout des routes `login, profile, error et logout`
+2. Ajout des routes `login, error et logout`
 
     ```javascript
 
@@ -93,24 +93,12 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     router.get('/login',redirectIfLoggedIn, authController.loginPage);
     router.post('/login',redirectIfLoggedIn, authController.login);
 
-    // Page de gestion du profil
-    router.get('/updateprofile', isLoggedIn, userController.getUpdateProfile);
-    router.post('/updateprofile', isLoggedIn, userController.postUpdateProfile);
-    router.get('/deleteprofile', isLoggedIn, userController.getDeleteProfile);
-    router.post('/deleteprofile', isLoggedIn, userController.postDeleteProfile);
-
     // Déconnexion
     router.get('/logout', authController.logout);
 
     // Page d'erreur
     router.get('/error', authController.errorPage);
-        // ===============================================
-    // Routes liées aux opérations de l'utilisateur 
-    // Ces routes nécessitent une authentification
-    // ===============================================
 
-    // Route pour afficher le profil de l'utilisateur
-    router.get('/profile', isLoggedIn, userController.getProfile);
     ```
 
 ### Étape 5: Création de `authController.js` 🎮
@@ -164,18 +152,10 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 
     // Gérer la connexion
     authController.login = passport.authenticate('local', {
-        successRedirect: '/profile',
+        successRedirect: '/users',
         failureRedirect: '/login',
         failureFlash: true
     });
-
-    // Afficher le tableau de bord
-    authController.profile = (req, res) => {
-        if (!req.isAuthenticated()) {
-            return res.redirect('/login');
-        }
-        res.render('pages/profile.twig', { user: req.user });
-    };
 
     // Gérer la déconnexion
     authController.logout = (req, res) => {
@@ -188,33 +168,14 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
         res.render('pages/error.twig');
     };
 
-    //Afficher la page de mise à jour du profil
-    authController.getUpdateProfile = (req, res) => {
-        res.render('pages/updateprofile.twig');
-    };
-
-    // Gérer la mise à jour du profil
-    authController.postUpdateProfile = (req, res) => {
-        User.findByIdAndUpdate(req.user._id, {
-            username: req.body.username,
-            email: req.body.email
-        }, (err, user) => {
-            if (err) {
-                console.error(err);
-                return res.render('pages/updateprofile.twig', { error: err.message });
-            }
-            res.redirect('/profile');
-        });
-    };
-
     module.exports = authController;
     ```
 
 ### Étape 6: Mise à Jour des Vues Twig 🎨
 
-#### Créez les fichiers `index`, `login.twig`, `profile.twig`, `deleteProfile`, `error` et `updateProfile.twig`.
+#### Créez les pages twig `login`, `error` et actualisez la page `home`.
 
-1. Création de `index.twig`:
+1. Actualisation de `home.twig`. Le contenu de la page home change si le user est connecté:
 
     ```html
     {% extends "layout/base.twig" %}
@@ -258,107 +219,37 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     ```html
     {% extends 'layout/base.twig' %}
 
-    {% block body %}
-    <div class="wrapper">
-        <h2>Connexion</h2>
-        <form action="/login" method="post">
-            <div class="mb-3">
-                <label for="username" class="form-label">Nom d'utilisateur</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mot de passe</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Se connecter</button>
-        </form>
-    </div>
-    {% endblock %}
+    {% block title %}Connexion{% endblock %}
 
+    {% block content %}
+        <div class="container mt-5">
+            <h1>Connexion 🗝️</h1>
 
-3. Création de `profile.twig`
+            {# Affichage des messages flash #}
+            {% if flashMessages %}
+                {% for flashMessage in flashMessages %}
+                    <div class="alert alert-{{ flashMessage.type }}">
+                        {{ flashMessage.message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-    ```html
-    {% extends 'layout/base.twig' %}
-
-    {% block body %}
-    <div class="wrapper">
-        <h2>Tableau de bord</h2>
-        <p>Bienvenue, {{ user.username }}!</p>
-
-        <div class="card">
-            <div class="card-header">
-                Vos informations
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ user.username }}</h5>
-                <p class="card-text">
-                    Email: {{ user.email }} <br>
-                    Rôle: {{ user.role }}
-                </p>
-                <a href="/updateprofile" class="btn btn-primary mb-2">Mettre à jour le profil</a>
-                <a href="/deleteprofile" class="btn btn-danger mb-2">Supprimer votre compte</a>
-                <a href="/logout" class="btn btn-warning">Déconnexion</a>
-            </div>
-        </div>
-    </div>
-    {% endblock %}
-
-4. Création de `updateprofile`
-
-    {% extends 'layout/base.twig' %}
-
-    {% block title %}Mise à jour du profil{% endblock %}
-
-    {% block body %}
-        <div class="wrapper mt-5">
-            <h1 class="mb-4">Mise à jour du profil</h1>
-            <form action="/path/to/update/profile" method="post">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Nom d'utilisateur</label>
-                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+            <form action="/login" method="post" class="mt-4">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Mot de passe actuel</label>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <div class="mb-3">
-                    <label for="new_password" class="form-label">Nouveau mot de passe</label>
-                    <input type="password" class="form-control" id="new_password" name="new_password">
-                </div>
-                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
             </form>
         </div>
     {% endblock %}
 
-5. Création de `deleteProfile`
 
-    ```html
-    {% extends 'layout/base.twig' %}
-
-    {% block title %}Suppression du compte{% endblock %}
-
-    {% block body %}
-        <div class="wrapper">
-            <h1 class="mb-4">Suppression du compte</h1>
-            <p class="text-danger">Attention ! Cette action est irréversible. Une fois que vous supprimez votre compte, toutes vos données seront effacées.</p>
-
-            <form action="/path/to/delete/account" method="post">
-                <div class="mb-3">
-                    <label for="password" class="form-label">Veuillez confirmer avec votre mot de passe</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
-                <a href="/profile" class="btn btn-secondary ml-2">Annuler</a>
-            </form>
-        </div>
-    {% endblock %}
-
-6. Création de la page `error`
+3. Création de la page `error`
 
     ```html
 
@@ -375,7 +266,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
             <div class="card text-center">
                 <p>Désolé, la page que vous recherchez n'existe pas ou a été déplacée.</p>
                 <p>
-                    <a href="/profile" class="btn btn-primary mb-4 current-btn">Aller à mon profil</a> ou
+                    <a href="/users" class="btn btn-primary mb-4 current-btn">Aller à la liste utilisateurs</a> ou
                     <a href="/" class="btn btn-primary mb-4 current-btn">Retourner à la page d'accueil</a>
                 </p>
             </div>
@@ -431,7 +322,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
                             <!-- Menu pour les utilisateurs connectés -->
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="/profile">
+                                    <a class="nav-link active" aria-current="page" href="/users">
                                         <i class="fa-solid fa-user" style="color: #ffffff;"></i>
                                         <span class="fs-6">{{ user.username }} dashboard</span>
                                     </a>
