@@ -47,7 +47,7 @@ authController.login = passport.authenticate('local', {
     successRedirect: '/users',
     failureRedirect: '/login',
     failureFlash: '📚 Oops ! T\'as oublié tes identifiants comme tes cours ? Réessaie !',
-    successFlash: '🎉 Bien joué ! T\'es prêt pour la session, let\'s go !'
+    successFlash: '🎉 Bien joué ! T\'es prêt pour la session, mec !'
 });
 
 // Gérer la déconnexion
