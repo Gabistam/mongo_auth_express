@@ -5,7 +5,7 @@ const authController = {};
 
 // Afficher la page d'accueil
 authController.home = (req, res) => {
-    res.render('pages/index.twig');
+    res.render('pages/home.twig');
 };
 
 // Afficher la page d'inscription
@@ -47,7 +47,7 @@ authController.login = passport.authenticate('local', {
     successRedirect: '/users',
     failureRedirect: '/login',
     failureFlash: '📚 Oops ! T\'as oublié tes identifiants comme tes cours ? Réessaie !',
-    successFlash: '🎉 Bien joué ! T\'es prêt pour la session, mec !'
+    successFlash: '🎉 Bien joué ! T\'es prêt pour la session, let\'s go !'
 });
 
 // Gérer la déconnexion

@@ -32,7 +32,7 @@
                         </li>
                         {% if user %}
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/tasks">Tasks</a>
+                            <a class="nav-link active" aria-current="page" href="/users">Userlist</a>
                         </li>
                         {% endif %}
 
@@ -45,12 +45,12 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/profile">
-                                    <i class="fa-solid fa-user" style="color: #ffffff;"></i>
+                                    <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="30">
                                     <span class="fs-6">{{ user.username }} dashboard</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-primary" aria-current="page">|</a>
+                                <a class="nav-link text-white" aria-current="page">|</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/logout">

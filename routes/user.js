@@ -20,7 +20,7 @@ const upload = multer({ storage: storage });
 router.get('/login', auth.redirectIfLoggedIn, authController.loginPage);
 
 // Route pour gérer le processus de connexion
-router.post('/login', authController.login);
+router.post('/login', auth.redirectIfLoggedIn, authController.login);
 
 // Route pour déconnecter l'utilisateur
 router.get('/logout', authController.logout);
@@ -28,23 +28,23 @@ router.get('/logout', authController.logout);
 ////////// Définition des routes liées aux utilisateurs ///////////
 
 // Route pour afficher la page d'inscription
-router.get('/register', userController.showRegisterPage);
+router.get('/register', auth.redirectIfLoggedIn, userController.showRegisterPage);
 
 // Route pour enregistrer un nouvel utilisateur
 // `upload.single('avatar')` permet de télécharger un seul fichier (avatar) dans la requête
-router.post('/register', upload.single('avatar'), userController.registerUser);
+router.post('/register',auth.redirectIfLoggedIn, upload.single('avatar'), userController.registerUser);
 
 // Route pour afficher la liste des utilisateurs
-router.get('/users', userController.listUsers);
+router.get('/users', auth.isLoggedIn, userController.listUsers);
 
 // Route pour afficher la page de modification d'un utilisateur
-router.get('/edit/:id', userController.showEditPage);
+router.get('/edit/:id', auth.isLoggedIn, userController.showEditPage);
 
 // Route pour modifier un utilisateur
-router.post('/edit/:id', upload.single('avatar'), userController.editUser);
+router.post('/edit/:id', auth.isLoggedIn, upload.single('avatar'), userController.editUser);
 
 // Route pour supprimer un utilisateur
-router.get('/delete/:id', userController.deleteUser);
+router.get('/delete/:id', auth.isLoggedIn, userController.deleteUser);
 
 // Route pour servir les images d'avatar
 router.get('/avatar/:id', async (req, res) => {

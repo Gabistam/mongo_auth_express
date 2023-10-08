@@ -3,9 +3,9 @@
 {% block title %}Liste des Utilisateurs{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="mt-5 mb-3">Liste des Utilisateurs 📋</h1>
-        <table class="table">
+    <div class="wrapper text-white">
+        <h1 class="mt-5">Liste des Utilisateurs 📋</h1>
+        <table class="table table-hover table-striped">
             <thead>
                 <tr>
                     <th scope="col">Nom d'utilisateur</th>
@@ -16,14 +16,14 @@
             <tbody>
                 {% for user in users %}
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="50">
                             {{ user.username }}
                         </td>
                         <td>{{ user.email }}</td>
-                        <td>
-                            <a href="/edit/{{ user._id }}" class="btn btn-warning">Modifier</a>
-                            <a href="/delete/{{ user._id }}" class="btn btn-danger">Supprimer</a>
+                        <td class="gy-2">
+                            <a href="/edit/{{ user._id }}" class="btn btn-warning mt-0 ">Modifier</a>
+                            <a href="/delete/{{ user._id }}" class="btn btn-danger mt-0">Supprimer</a>
                         </td>
                     </tr>
                 {% endfor %}
