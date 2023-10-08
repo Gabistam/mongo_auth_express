@@ -16,7 +16,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 1. Installez les packages nécessaires :
 
     ```bash
-    npm install passport express-session passport-local
+    npm install passport express-session passport-local connect-flash
     ```
 
 ### Étape 2: Configuration de `.env` 🗝️
@@ -99,6 +99,19 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     // Page d'erreur
     router.get('/error', authController.errorPage);
 
+    // Route pour afficher la liste des utilisateurs
+    router.get('/users', auth.isLoggedIn, userController.listUsers);
+
+    // Route pour afficher la page de modification d'un utilisateur
+    router.get('/edit/:id', auth.isLoggedIn, userController.showEditPage);
+
+    // Route pour modifier un utilisateur
+    router.post('/edit/:id', auth.isLoggedIn, upload.single('avatar'), userController.editUser);
+
+    // Route pour supprimer un utilisateur
+    router.get('/delete/:id', auth.isLoggedIn, userController.deleteUser);
+
+
     ```
 
 ### Étape 5: Création de `authController.js` 🎮
@@ -114,7 +127,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 
     // Afficher la page d'accueil
     authController.home = (req, res) => {
-        res.render('pages/index.twig');
+        res.render('pages/home.twig');
     };
 
     // Afficher la page d'inscription
@@ -134,15 +147,16 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
             console.log("Tentative d'enregistrement");
             if (err) {
                 console.error("Erreur lors de l'enregistrement:", err);
-                return res.render('pages/register.twig', { error: err.message });
+                req.flash('error', '📚 Oops ! Un problème est survenu pendant l\'inscription. Réessaie !');
+                return res.redirect('/register');
             }
             console.log("Utilisateur enregistré, tentative d'authentification");
+            req.flash('success', '👍 Inscription réussie ! Bienvenue à la fac virtuelle !');
             passport.authenticate('local')(req, res, () => {
                 console.log("Utilisateur authentifié");
                 res.redirect('/login');
             });
         });
-
     };
 
     // Afficher la page de connexion
@@ -154,11 +168,13 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     authController.login = passport.authenticate('local', {
         successRedirect: '/users',
         failureRedirect: '/login',
-        failureFlash: true
+        failureFlash: '📚 Oops ! T\'as oublié tes identifiants comme tes cours ? Réessaie !',
+        successFlash: '🎉 Bien joué ! T\'es prêt pour la session, mec !'
     });
 
     // Gérer la déconnexion
     authController.logout = (req, res) => {
+        req.flash('info', '👋 Pause café ? Reviens vite, les cours t\'attendent !');
         res.clearCookie('connect.sid'); // Supprime le cookie de session
         res.redirect('/login');
     };
@@ -180,40 +196,39 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     ```html
     {% extends "layout/base.twig" %}
 
-    <!-- Définit le titre de la page -->
-    {% block title %}Accueil{% endblock %}
+        <!-- Définit le titre de la page -->
+        {% block title %}Accueil{% endblock %}
 
-    <!-- Définit le contenu principal de la page -->
-    {% block body %}
+        <!-- Définit le contenu principal de la page -->
+        {% block content %}
 
-        <!-- Conteneur principal pour le contenu -->
-        <div class="wrapper">
+            <!-- Conteneur principal pour le contenu -->
+            <div class="wrapper text-white">
 
-            <!-- Affiche un message de bienvenue -->
-            <h1>
-                <!-- Vérifie si l'utilisateur est connecté -->
+                <!-- Affiche un message de bienvenue -->
+                <h1>
+                    <!-- Vérifie si l'utilisateur est connecté -->
+                    {% if user %}
+                        <!-- Si l'utilisateur est connecté, affiche son nom -->
+                        Bonjour {{ user.username }}! <br>
+                    {% endif %}
+
+                    <!-- Message général pour tous les visiteurs -->
+                    Ceci est la page d'accueil de notre application Express avec Twig.
+
+                    <br>
+                </h1>
+
+                <!-- Affiche une image si l'utilisateur est connecté -->
                 {% if user %}
-                    <!-- Si l'utilisateur est connecté, affiche son nom -->
-                    Bonjour {{ user.username }}! <br>
+                    <div class="d-flex justify-content-center">
+                        <img src="/img/welcome-minion.gif" alt="Image de bienvenue avec un minion" >
+                    </div>
                 {% endif %}
 
-                <!-- Message général pour tous les visiteurs -->
-                Ceci est la page d'accueil de notre application Express avec Twig.
+            </div>
 
-                <br>
-            </h1>
-
-            <!-- Affiche une image si l'utilisateur est connecté -->
-            {% if user %}
-                <div class="d-flex justify-content-center">
-                    <img src="/img/welcome-minion.gif" alt="Image de bienvenue avec un minion" >
-                </div>
-            {% endif %}
-
-        </div>
-
-    {% endblock %}
-
+        {% endblock %}
 2. Création de `login.twig`
 
     ```html
@@ -222,7 +237,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     {% block title %}Connexion{% endblock %}
 
     {% block content %}
-        <div class="container mt-5">
+        <div class="wrapper mt-5 text-white">
             <h1>Connexion 🗝️</h1>
 
             {# Affichage des messages flash #}
@@ -236,14 +251,14 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 
             <form action="/login" method="post" class="mt-4">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Se connecter</button>
+                <button type="submit" class="btn btn-primary mt-5">Se connecter</button>
             </form>
         </div>
     {% endblock %}
@@ -257,9 +272,9 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 
     {% block title %}404 - Page non trouvée{% endblock %}
 
-    {% block body %}
+    {% block content %}
 
-        <div class="wrapper">
+        <div class="wrapper text-white">
 
             <h1>404 - Page non trouvée</h1>
 
@@ -276,88 +291,88 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
 #### Mettez à jour `partials/header.twig` pour afficher des liens différents selon l'état de connexion de l'utilisateur.
 
     ```html
-            <!-- En-tête du site -->
-    <header>
+        <!-- En-tête du site -->
+<header>
 
-        <!-- Barre de navigation principale -->
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <!-- Barre de navigation principale -->
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
 
-            <!-- Conteneur fluide pour un espacement uniforme -->
-            <div class="container-fluid">
+        <!-- Conteneur fluide pour un espacement uniforme -->
+        <div class="container-fluid">
 
-                <!-- Logo et nom de l'application -->
-                <a class="navbar-brand" href="/">
-                    <img src="/img/logo7.png" width="50px" alt="Logo WelcomApp">
-                    <span class="fs-6 text-color-primary">WelcomApp</span>
-                </a>
+            <!-- Logo et nom de l'application -->
+            <a class="navbar-brand" href="/">
+                <img src="/img/logo4.png" width="50px" alt="Logo WelcomApp">
+                <span class="fs-6 text-color-primary">WelcomApp</span>
+            </a>
 
-                <!-- Bouton pour le menu mobile -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <!-- Bouton pour le menu mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <!-- Liens de navigation -->
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <!-- Liens de navigation -->
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
-                    <!-- Conteneur fluide pour un espacement uniforme -->
-                    <div class="container-fluid d-flex">
+                <!-- Conteneur fluide pour un espacement uniforme -->
+                <div class="container-fluid d-flex">
 
-                        <!-- Liens principaux de la navigation -->
-                        <ul class="navbar-nav p-2 flex-grow-1">
+                    <!-- Liens principaux de la navigation -->
+                    <ul class="navbar-nav p-2 flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Accueil</a>
+                        </li>
+                        {% if user %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/users">Userlist</a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+
+                    <!-- Vérification si l'utilisateur est connecté -->
+                    {% if user %}
+
+                        <!-- Menu pour les utilisateurs connectés -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/">Accueil</a>
+                                <a class="nav-link active" aria-current="page" href="/profile">
+                                    <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="30">
+                                    <span class="fs-6">{{ user.username }} dashboard</span>
+                                </a>
                             </li>
-                            {% if user %}
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/tasks">Tasks</a>
+                                <a class="nav-link text-white" aria-current="page">|</a>
                             </li>
-                            {% endif %}
-
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/logout">
+                                    <i class="fa-solid fa-right-from-bracket fa-lg" style="color: red">Deconnexion</i>
+                                </a>
+                            </li>
                         </ul>
 
-                        <!-- Vérification si l'utilisateur est connecté -->
-                        {% if user %}
+                    {% else %}
 
-                            <!-- Menu pour les utilisateurs connectés -->
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="/users">
-                                        <i class="fa-solid fa-user" style="color: #ffffff;"></i>
-                                        <span class="fs-6">{{ user.username }} dashboard</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-primary" aria-current="page">|</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="/logout">
-                                        <i class="fa-solid fa-right-from-bracket fa-lg" style="color: red">Deconnexion</i>
-                                    </a>
-                                </li>
-                            </ul>
+                        <!-- Menu pour les visiteurs non connectés -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" aria-current="page" href="/register">Inscription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" aria-current="page">|</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" aria-current="page" href="/login">Connexion</a>
+                            </li>
+                        </ul>
 
-                        {% else %}
-
-                            <!-- Menu pour les visiteurs non connectés -->
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-primary" aria-current="page" href="/register">Inscription</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-primary" aria-current="page">|</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-primary" aria-current="page" href="/login">Connexion</a>
-                                </li>
-                            </ul>
-
-                        {% endif %}
-                    </div>
+                    {% endif %}
                 </div>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
     ```
 
 ### Étape 7: Mise à Jour de `app.js` 🌐
@@ -405,7 +420,7 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
     UserSchema.plugin(passportLocalMongoose);
 
 
-## Conseil de notre Développeur Senior 👨‍💻
+## Conseil de Développeur Senior 👨‍💻
 
 Assurez-vous de bien sécuriser votre clé secrète de session et de ne jamais la pousser sur un dépôt public. Utilisez des variables d'environnement pour la stocker. 🛡️
 
