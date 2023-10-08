@@ -337,9 +337,9 @@ Dans ce TP, nous allons mettre en place une authentification par session en util
                         <!-- Menu pour les utilisateurs connectés -->
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 p-2">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/profile">
+                                <a class="nav-link active" aria-current="page" href="#">
                                     <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="30">
-                                    <span class="fs-6">{{ user.username }} dashboard</span>
+                                    <span class="fs-6">{{ user.username }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -426,11 +426,11 @@ Assurez-vous de bien sécuriser votre clé secrète de session et de ne jamais l
 
 ## Points à Vérifier ✅
 
-- [ ] Les dépendances sont-elles installées ?
-- [ ] Le middleware `auth.js` est-il créé ?
-- [ ] Les routes sont-elles mises à jour ?
-- [ ] Le contrôleur `authController.js` est-il créé ?
-- [ ] Les vues Twig sont-elles mises à jour ?
-- [ ] `app.js` est-il mis à jour ?
+- [] Les dépendances sont-elles installées ?
+- [] Le middleware `auth.js` est-il créé ?
+- [] Les routes sont-elles mises à jour ?
+- [] Le contrôleur `authController.js` est-il créé ?
+- [] Les vues Twig sont-elles mises à jour ?
+- [] `app.js` est-il mis à jour ?
 
 Si vous pouvez cocher toutes ces cases, félicitations ! Vous avez réussi à mettre en place une authentification par session ! 🎉🚀
