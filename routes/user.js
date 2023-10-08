@@ -20,7 +20,7 @@ const upload = multer({ storage: storage });
 router.get('/login', auth.redirectIfLoggedIn, authController.loginPage);
 
 // Route pour gérer le processus de connexion
-router.post('/login', authController.login);
+router.post('/login',redirectIfLoggedIn, authController.login);
 
 // Route pour déconnecter l'utilisateur
 router.get('/logout', authController.logout);
@@ -35,16 +35,16 @@ router.get('/register', userController.showRegisterPage);
 router.post('/register', upload.single('avatar'), userController.registerUser);
 
 // Route pour afficher la liste des utilisateurs
-router.get('/users', userController.listUsers);
+router.get('/users', isLoggedIn,userController.listUsers);
 
 // Route pour afficher la page de modification d'un utilisateur
-router.get('/edit/:id', userController.showEditPage);
+router.get('/edit/:id', isLoggedIn, userController.showEditPage);
 
 // Route pour modifier un utilisateur
-router.post('/edit/:id', upload.single('avatar'), userController.editUser);
+router.post('/edit/:id', isLoggedIn, upload.single('avatar'), userController.editUser);
 
 // Route pour supprimer un utilisateur
-router.get('/delete/:id', userController.deleteUser);
+router.get('/delete/:id', isLoggedIn,userController.deleteUser);
 
 // Route pour servir les images d'avatar
 router.get('/avatar/:id', async (req, res) => {
