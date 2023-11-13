@@ -1,0 +1,19 @@
+{% extends 'layout/base.twig' %}
+
+{% block title %}Suppression du compte{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        <h1 class="mb-4">Suppression du compte</h1>
+        <p class="text-danger">Attention ! Cette action est irréversible. Une fois que vous supprimez votre compte, toutes vos données seront effacées.</p>
+        
+        <form action="/path/to/delete/account" method="post">
+            <div class="mb-3">
+                <label for="password" class="form-label">Veuillez confirmer avec votre mot de passe</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
+            <a href="/profile" class="btn btn-secondary ml-2">Annuler</a>
+        </form>
+    </div>
+{% endblock %}

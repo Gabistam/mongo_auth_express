@@ -3,6 +3,9 @@
 // Importation du modèle User
 const User = require('../models/User');
 
+//importation du utils userResponseParser
+const {userResponseParser} = require('../utils/userResponseParser');
+
 // Importation du module multer
 const multer = require('multer');
 
@@ -32,7 +35,7 @@ exports.registerUser = async (req, res) => {
             }
         });
         await newUser.save();
-        res.redirect('/users');
+        res.redirect('/login');
     } catch (error) {
         console.error("Erreur lors de l'enregistrement de l'utilisateur :", error);
         res.status(500).send("Erreur lors de l'enregistrement de l'utilisateur.");
@@ -92,3 +95,19 @@ exports.deleteUser = async (req, res) => {
     res.redirect('/users');
 };
 
+////////////////// Gestion du profile ///////////////////////
+
+// Afficher la page de profil
+exports.showProfilePage = (req, res) => {
+    res.render('pages/profile', { user: userResponseParser(req.user) });
+};
+
+// Afficher la page de mise à jour du profil
+exports.showUpdateProfilePage = (req, res) => {
+    res.render('pages/updateProfile');
+};
+
+// Afficher la page de suppression du profil
+exports.showDeleteProfilePage = (req, res) => {
+    res.render('pages/deleteProfile');
+};

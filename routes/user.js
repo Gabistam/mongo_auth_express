@@ -35,7 +35,7 @@ router.get('/register', auth.redirectIfLoggedIn, userController.showRegisterPage
 router.post('/register',auth.redirectIfLoggedIn, upload.single('avatar'), userController.registerUser);
 
 // Route pour afficher la liste des utilisateurs
-router.get('/users', auth.isLoggedIn, userController.listUsers);
+router.get('/users', auth.isLoggedIn, auth.isAdmin, userController.listUsers);
 
 // Route pour afficher la page de modification d'un utilisateur
 router.get('/edit/:id', auth.isLoggedIn, userController.showEditPage);
@@ -56,6 +56,18 @@ router.get('/avatar/:id', async (req, res) => {
         res.status(400).send("Erreur lors de la récupération de l'avatar");
     }
 });
+
+////////////////// Gestion du profile //////////////////////////
+
+// Route pour afficher la page de profil
+router.get('/profile', auth.isLoggedIn, userController.showProfilePage);
+
+// Route pour afficher la page de mise à jour du profil
+router.get('/updateProfile', auth.isLoggedIn, userController.showUpdateProfilePage);
+
+// Route pour afficher la page de suppression du profil
+router.get('/deleteProfile', auth.isLoggedIn, userController.showDeleteProfilePage);
+
 
 // Exporte le routeur pour l'utiliser dans d'autres fichiers
 module.exports = router;

@@ -10,7 +10,7 @@ authController.home = (req, res) => {
 
 // Afficher la page d'inscription
 authController.registerPage = (req, res) => {
-    res.render('pages/register.twig');
+    res.render('pages/register');
 };
 
 // Gérer l'inscription
@@ -44,7 +44,7 @@ authController.loginPage = (req, res) => {
 
 // Gérer la connexion
 authController.login = passport.authenticate('local', {
-    successRedirect: '/users',
+    successRedirect: '/profile',
     failureRedirect: '/login',
     failureFlash: '📚 Oops ! T\'as oublié tes identifiants comme tes cours ? Réessaie !',
     successFlash: '🎉 Bien joué ! T\'es prêt pour la session, mec !'

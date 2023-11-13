@@ -1,0 +1,26 @@
+{% extends 'layout/base.twig' %}
+
+{% block content %}
+<div class="wrapper">
+    <h1>Dashboard</h1>
+    <div class="text-center mb-5">
+        <img src="/avatar/{{ user._id }}" alt="{{ user.username }}" width="200" style="border-radius: 40%;">
+    </div>
+    <p>Bienvenue, {{ user.username }}!</p>
+
+    <div class="card">
+        <div class="card-header">
+            Vos informations
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">
+                Email: {{ user.email }} <br>
+            </p>
+            <a href="/updateprofile" class="btn btn-primary mb-2">Mettre à jour le profil</a>
+            <a href="/deleteprofile" class="btn btn-danger mb-2">Supprimer votre compte</a>
+            <a href="/logout" class="btn btn-warning">Déconnexion</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
