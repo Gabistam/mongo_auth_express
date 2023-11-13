@@ -39,8 +39,8 @@ dependencies:
     specifier: ^7.5.2
     version: 7.5.2
   morgan:
-    specifier: ~1.9.1
-    version: 1.9.1
+    specifier: ^1.10.0
+    version: 1.10.0
   node-sass:
     specifier: ^9.0.0
     version: 9.0.0
@@ -3702,13 +3702,13 @@ packages:
       - supports-color
     dev: false
 
-  /morgan@1.9.1:
-    resolution: {integrity: sha512-HQStPIV4y3afTiCYVxirakhlCfGkI161c76kKFca7Fk1JusM//Qeo1ej2XaMniiNeaZklMVrh3vTtIzpzwbpmA==}
+  /morgan@1.10.0:
+    resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
     engines: {node: '>= 0.8.0'}
     dependencies:
       basic-auth: 2.0.1
       debug: 2.6.9
-      depd: 1.1.2
+      depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
     transitivePeerDependencies:
