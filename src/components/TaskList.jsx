@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TaskItem from './TaskItem';
 import ShowTask from './ShowTask';
 import AddTask from './AddTask';
+import DeleteTask from './DeleteTask';
+import UpdateTask from './UpdateTask';
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
@@ -52,6 +54,7 @@ function TaskList() {
             }
 
             const updatedTask = await response.json();
+            console.log("Mise à jour de la tâche:", updatedTask);
             setTasks((prevTasks) =>
                 prevTasks.map((task) =>
                     task._id === updatedTask._id ? updatedTask : task
@@ -62,12 +65,27 @@ function TaskList() {
         }
     };
 
+    const handleDeleteTask = (deletedTaskId) => {
+        console.log("Suppression de la tâche avec l'ID:", deletedTaskId);
+        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== deletedTaskId));
+    };
+
+    const handleUpdateTask = (updatedTask) => {
+        setTasks((prevTasks) =>
+            prevTasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+        );
+    };
+
     return (
         <div className="task-list">
             <h1>Ma liste de tâches</h1>
             <AddTask onTaskAdded={handleNewTask} />
             {selectedTask ? (
-                <ShowTask task={selectedTask} />
+                <div>
+                    <ShowTask task={selectedTask} />
+                    <DeleteTask task={selectedTask} onClose={() => setSelectedTask(null)} onDelete={handleDeleteTask} />
+                    <UpdateTask task={selectedTask} onClose={() => setSelectedTask(null)} onUpdate={handleUpdateTask} />
+                </div>
             ) : (
                 tasks.map(task => (
                     <TaskItem key={task._id} task={task} onClick={() => handleTaskClick(task)} onToggleStatus={handleToggleStatus} />

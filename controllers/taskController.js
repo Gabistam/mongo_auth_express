@@ -1,31 +1,24 @@
-const express = require('express');
 const Task = require('../models/Task');
-const router = express.Router();
-const { isLoggedIn } = require('../middlewares/auth');
 
-// Route pour servir la page React
-router.get('/tasks', (req, res) => {
+exports.renderTasksPage = (req, res) => {
     res.render('pages/tasks.twig');
-});
+};
 
-// Route pour récupérer toutes les tâches
-router.get('/api/tasks', isLoggedIn, async (req, res) => {
+exports.getAllTasks = async (req, res) => {
     try {
-        const tasks = await Task.find({ userId: req.user._id });  // Filtrer les tâches par userId
+        const tasks = await Task.find({ userId: req.user._id });
         res.json(tasks);
     } catch (err) {
         console.error("Erreur lors de la récupération des tâches:", err);
         res.status(500).send('Erreur lors de la récupération des tâches.');
     }
-});
+};
 
-
-// Route pour créer une nouvelle tâche
-router.post('/api/tasks', isLoggedIn, async (req, res) => {
+exports.createTask = async (req, res) => {
     try {
         const taskData = {
             ...req.body,
-            userId: req.user._id  // Utilisez l'ID de l'utilisateur connecté
+            userId: req.user._id
         };
         const task = new Task(taskData);
         await task.save();
@@ -35,11 +28,9 @@ router.post('/api/tasks', isLoggedIn, async (req, res) => {
         console.error("Erreur détaillée:", err);
         res.status(500).send('Erreur lors de la création d\'une nouvelle tâche.');
     }
-});
+};
 
-
-// Route pour mettre à jour une tâche
-router.put('/api/tasks/:id', isLoggedIn, async (req, res) => {
+exports.updateTask = async (req, res) => {
     try {
         const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
         if (!task) {
@@ -51,20 +42,18 @@ router.put('/api/tasks/:id', isLoggedIn, async (req, res) => {
     } catch (err) {
         res.status(500).send('Erreur lors de la mise à jour de la tâche.');
     }
-});
+};
 
-// Route pour supprimer une tâche
-router.delete('/api/tasks/:id', isLoggedIn, async (req, res) => {
+exports.deleteTask = async (req, res) => {
     try {
-        const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
-        if (!task) {
-            return res.status(403).send('Vous n\'êtes pas autorisé à supprimer cette tâche.');
+        const result = await Task.deleteOne({ _id: req.params.id, userId: req.user._id });
+        if (result.deletedCount === 0) {
+            return res.status(403).send('Vous n\'êtes pas autorisé à supprimer cette tâche ou la tâche n\'existe pas.');
         }
-        await task.remove();
         res.json({ message: 'Tâche supprimée avec succès.' });
     } catch (err) {
         res.status(500).send('Erreur lors de la suppression de la tâche.');
+        console.log("Erreur lors de la suppression de la tâche:", err);
     }
-});
+};
 
-module.exports = router;

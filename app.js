@@ -12,7 +12,7 @@ const { initDatabase } = require('./config/database');
 
 // Importation des routes
 const userRouter = require('./routes/user');
-const TaskRoutes = require('./routes/task');
+const TaskRoutes = require('./routes/taskRoutes');
 
 var app = express();
 

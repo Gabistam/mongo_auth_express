@@ -1,7 +1,6 @@
-// UpdateTask.jsx
 import React, { useState } from 'react';
 
-function UpdateTask({ task, onClose }) {
+function UpdateTask({ task, onClose, onUpdate }) {
     const [title, setTitle] = useState(task.title);
 
     const handleUpdate = async () => {
@@ -19,8 +18,9 @@ function UpdateTask({ task, onClose }) {
                 throw new Error('Erreur lors de la mise à jour de la tâche');
             }
 
-            // Si la mise à jour a réussi, fermez le modal et rafraîchissez la liste des tâches ou mettez à jour l'état
-            onClose();
+            const updatedTask = await response.json();
+            onUpdate(updatedTask); // Mettre à jour la liste des tâches dans TaskList
+            onClose(); // Fermer le modal
         } catch (error) {
             console.error("Erreur lors de la mise à jour de la tâche:", error);
         }
@@ -39,8 +39,6 @@ function UpdateTask({ task, onClose }) {
             <button className="btn btn-secondary m-2" onClick={onClose}>Annuler</button>
         </div>
     );
-    
-    
 }
 
 export default UpdateTask;
