@@ -57,6 +57,16 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,  // Changé à false
+  cookie: {
+      secure: false, // Mettez true en production si vous utilisez HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 24 heures
+  }
+}));
+
 // Configuration de Passport pour utiliser une stratégie locale
 passport.use(new localStrategy(User.authenticate()));
 

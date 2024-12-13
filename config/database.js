@@ -9,8 +9,8 @@ const MONGODB_URI=`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PAS
 const connectDB = async () => {
     try {
         await mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true,
         });
         console.log('La connexion à la base de données a été établie avec succès.');
     } catch (error) {
