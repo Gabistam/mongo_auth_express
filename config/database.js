@@ -14,7 +14,7 @@ const connectDB = async () => {
         });
         console.log('La connexion à la base de données a été établie avec succès.');
     } catch (error) {
-        console.error('Impossible de se connecter à la base de données:', error);
+        console.error('Impossible de se connecter à la base de données', error);
     }
 };
 
